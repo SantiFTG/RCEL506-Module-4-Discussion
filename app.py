@@ -18,11 +18,16 @@ major_df = pd.DataFrame(major_data)
 nonrevenue_df = pd.DataFrame(nonrevenue_data)
 
 
-selected_sport = st.selectbox("Choose a non revenue sport to highlight:", nonrevenue_df["Sport"])
+highlight_options = ["Original NYT view"] + nonrevenue_df["Sport"].tolist()
+selected_sport = st.selectbox("Choose a sport to highlight:", highlight_options)
 
 
-nonrevenue_colors = ["red" if sport == selected_sport
-                     else "white" for sport in nonrevenue_df["Sport"]]
+if selected_sport == "Original NYT view":
+    nonrevenue_colors = ["lightcoral" if sport in ["Men's track/cross country", "Women's track/cross country"] 
+                         else "white" for sport in nonrevenue_df["Sport"]]
+else:
+    nonrevenue_colors = ["red" if sport == selected_sport 
+                         else "white" for sport in nonrevenue_df["Sport"]]
 
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 9), gridspec_kw={"width_ratios": [1, 1.15], "wspace": 0.48})
@@ -62,5 +67,11 @@ for ax in [ax1, ax2]:
     ax.spines["left"].set_linewidth(1)
     ax.tick_params(axis="x", length=0, labelsize=9, colors="black")
     ax.tick_params(axis="y", length=0, labelsize=9, colors="black"    )
+
+
+if selected_sport == "Original NYT view":
+
+    ax2.annotate("Both men's and women's\ntrack and field athletes\nsaw large increases in\nexpected earnings this\nyear, thanks in part to the\nadded exposure for these\nsports at the Olympics\nthis year.", xy=(15000, 3.5), xytext=(10500, 14), fontsize=7.5, color="gray", ha="left", va="center", 
+                 arrowprops=dict(arrowstyle="->", color="gray", connectionstyle="arc3,rad=-0.35", linewidth=0.8))
 
 st.pyplot(fig)
